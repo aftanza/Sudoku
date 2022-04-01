@@ -364,9 +364,7 @@ public class SudokuTest {
 
         solveFunction();
     }
-
-
-
+//gsdkjfdgjhb
     public static void main(String[] args) {
 //        Scanner input = new Scanner(System.in);
 //        int x = 0;
