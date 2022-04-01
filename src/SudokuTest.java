@@ -3,10 +3,10 @@ import java.util.Random;
 public class SudokuTest {
     private final int rowLength = 9;
     private final int colLength = 9;
-    private final int[][][] arr = new int[rowLength][colLength][2];
-    private final int[][][] firstSolution = new int[rowLength][colLength][2];
-    private final int[][][] cache = new int[rowLength][colLength][2];
-    private final int[] select = new int[2];
+    private final int[][][] arr = new int[rowLength][colLength][2]; //main Sudoku table
+    private final int[][][] firstSolution = new int[rowLength][colLength][2]; //first solution to Sudoku
+    private final int[][][] cache = new int[rowLength][colLength][2]; //Previous state of Sudoku table before deleting any permanent tiles
+    private final int[] select = new int[2]; //Using a "Select" to select specific tiles in a 9x9 Sudoku. Mainly used with selectNext() and selectBefore()
     private boolean isReversing = false;
     private boolean currentIterationFinished = false;
 
@@ -14,6 +14,7 @@ public class SudokuTest {
         resetTable();
     }
 
+    /*Check row/col/3x3 box for conflicting numbers*/
     public boolean checkRow(int row, int numToCheck){
         for(int i=0; i<9; ++i){
             if(i != select[1]) {
@@ -23,7 +24,6 @@ public class SudokuTest {
         }
         return false;
     }
-
     public boolean checkCol(int col, int numToCheck){
         for(int i=0; i<9; ++i){
             if(i != select[0]) {
@@ -33,7 +33,6 @@ public class SudokuTest {
         }
         return false;
     }
-
     public boolean checkBox(int row, int col, int numToCheck){
         for(int i=(row/3)*3; i<(row/3)*3+3; ++i){
             for(int j=(col/3)*3; j<(col/3)*3+3; ++j){
@@ -47,6 +46,7 @@ public class SudokuTest {
         return false;
     }
 
+//    Check if there are zeroes in the table
     public boolean areThereZeroes(){
         for(int i=0; i<9; ++i){
             for(int j=0; j<9; ++j){
@@ -57,11 +57,39 @@ public class SudokuTest {
         return false;
     }
 
+//    Set all the changeable (arr[x][x][1] == 0) to zero
     public void setChangeableToZero(){
         for(int i=0; i<9; ++i){
             for(int j=0; j<9; ++j){
                 if(arr[i][j][1] == 0)
                     arr[i][j][0] = 0;
+            }
+        }
+    }
+
+//    set all to 0 and changeable
+    public void resetTable(){
+        for(int i=0; i<rowLength; ++i){
+            for(int j=0; j<colLength; ++j)
+                arr[i][j][0] = arr[i][j][1] = 0;
+        }
+    }
+
+    public void setPermanent(int row, int col, int x){
+        arr[row][col][0] = x;
+        arr[row][col][1] = 1;
+    }
+    public void removePermanent(int row, int col){
+        saveToCache();
+        arr[row][col][0] = 0;
+        arr[row][col][1] = 0;
+    }
+
+//    set all to non-changeable
+    public void setAllPermanent(){
+        for(int i=0; i<9; ++i){
+            for(int j=0; j<9; ++j){
+                arr[i][j][1] = 1;
             }
         }
     }
@@ -83,34 +111,7 @@ public class SudokuTest {
         System.out.println();
     }
 
-    public void resetTable(){
-        for(int i=0; i<rowLength; ++i){
-            for(int j=0; j<colLength; ++j)
-                arr[i][j][0] = arr[i][j][1] = 0;
-        }
-    }
-
-    public void setAllPermanent(){
-        for(int i=0; i<9; ++i){
-            for(int j=0; j<9; ++j){
-                arr[i][j][1] = 1;
-            }
-        }
-    }
-
-    public void setPermanent(int row, int col, int x){
-        arr[row][col][0] = x;
-        arr[row][col][1] = 1;
-    }
-
-    public void removePermanent(int row, int col){
-        saveToCache();
-        arr[row][col][0] = 0;
-        arr[row][col][1] = 0;
-    }
-
-
-    /*--------------------------------------------------------------*/
+    /*Randomizer functions*/
     public void setRandomPermanents(int howManyPermanents){
         Random rng = new Random();
 
@@ -135,7 +136,6 @@ public class SudokuTest {
 
         }
     }
-
     public void setRandomDiagonal(){
         Random rng = new Random();
 
@@ -159,7 +159,6 @@ public class SudokuTest {
             }
         }
     }
-
     public void setRandomX(){
         setRandomDiagonal();
 
@@ -187,7 +186,6 @@ public class SudokuTest {
             }
         }
     }
-
     public void removeRandomPermanent(int howManyPermanents){
         Random rng = new Random();
 
@@ -209,8 +207,8 @@ public class SudokuTest {
         }
     }
 
-    /*--------------------------------------------------------------*/
-
+    /*Cache functions*/
+//    save current table to an array called cache
     public void saveToCache(){
         for(int i=0; i<9; ++i){
             for(int j=0; j<9; ++j){
@@ -218,7 +216,7 @@ public class SudokuTest {
             }
         }
     }
-
+//    set array in cache as current table
     public void setCacheAsCurrent(){
         for(int i=0; i<9; ++i){
             for(int j=0; j<9; ++j){
@@ -226,7 +224,7 @@ public class SudokuTest {
             }
         }
     }
-
+//    reset the cache
     public void clearCache(){
         for(int i=0; i<9; ++i){
             for(int j=0; j<9; ++j){
@@ -235,9 +233,7 @@ public class SudokuTest {
         }
     }
 
-    /*--------------------------------------------------------------*/
-
-
+    /*Select functions*/
     public void selectNext(){
 
         if(!(select[1] == 8))
@@ -251,7 +247,6 @@ public class SudokuTest {
         }
 
     }
-
     public void selectBefore(){
 
         if(!(select[1] == 0))
@@ -266,10 +261,10 @@ public class SudokuTest {
 
     }
 
+    /*Get current selected state*/
     public int currentSelectedNum(){
         return arr[select[0]][select[1]][0];
     }
-
     public int currentSelectedState(){
         return arr[select[0]][select[1]][1];
     }
@@ -284,6 +279,7 @@ public class SudokuTest {
         return true;
     }
 
+//    compare current table with first solution
     public boolean compareWithFirstSolution(){
         for(int i=0; i<9; ++i){
             for(int j=0; j<9; ++j){
@@ -294,17 +290,17 @@ public class SudokuTest {
         return true;
     }
 
-    public void setFirstSolution(){
-        for(int i=0; i<9; ++i){
-            for(int j=0; j<9; ++j){
-                firstSolution[i][j][0] = arr[i][j][0];
-            }
-        }
-    }
-
-    private void solveFunction(){
+    /*Solving functions*/
+//    general solving algo
+    public void solveFunction(){
         while (!currentIterationFinished) {
-//            printTable();
+//            try {
+//                Thread.sleep(500);
+//                printTable();
+//            }
+//            catch (InterruptedException e){
+//            }
+            printTable();
 
             if (currentSelectedState() == 0) {
                 ++arr[select[0]][select[1]][0];
@@ -344,7 +340,7 @@ public class SudokuTest {
             }
         }
     }
-
+//    main solving func to get first solution
     public void solveTable(){
         currentIterationFinished = false;
         isReversing = false;
@@ -352,17 +348,8 @@ public class SudokuTest {
         select[1] = 0;
 
         solveFunction();
-//        try {
-//            Thread.sleep(500);
-//            printTable();
-//        }
-//        catch (InterruptedException e){
-//        }
-
-
     }
-
-    //ends with either another solution or full of zeroes
+//    ends with either another solution or full of zeroes
     public void findOtherSolution(){
         currentIterationFinished = false;
         isReversing = true;
@@ -371,43 +358,55 @@ public class SudokuTest {
 
         solveFunction();
     }
-
-    public static void main(String[] args) {
-//        Scanner input = new Scanner(System.in);
-//        int x = 0;
-
-        SudokuTest game = new SudokuTest();
-//        game.printTable();
-//        game.setRandomPermanents(17);
-//        game.setRandomDiagonal();
-        game.setRandomX();
-        game.solveTable();
-        game.printTable();
-        game.setFirstSolution();
-        game.setAllPermanent();
-
-        for(int i=1; i<=81; ++i){
-            game.setChangeableToZero();
-            game.removeRandomPermanent(1);
-//            game.printTable();
-
-            game.solveTable();
-//            game.printTable();
-
-            game.findOtherSolution();
-//            game.printTable();
-
-            if(!game.compareWithFirstSolution()){
-                if(!game.areThereZeroes()){
-                    game.setCacheAsCurrent();
-//                    game.printTable();
-                    System.out.println((81-i+1));
-                    break;
-                }
+//    save the first solution
+    public void setFirstSolution(){
+        for(int i=0; i<9; ++i){
+            for(int j=0; j<9; ++j){
+                firstSolution[i][j][0] = arr[i][j][0];
             }
         }
+    }
 
+    public static void main(String[] args) {
+        SudokuTest game = new SudokuTest();
+        game.resetTable();
+        game.setRandomPermanents(30);
         game.printTable();
+        game.solveTable();
+//        game.printTable();
 
+
+//        game.resetTable();
+////        game.printTable();
+////        game.setRandomPermanents(17);
+////        game.setRandomDiagonal();
+//        game.setRandomX();
+//        game.solveTable();
+//        game.printTable();
+//        game.setFirstSolution();
+//        game.setAllPermanent();
+//
+//        for(int i=1; i<=81; ++i){
+//            game.setChangeableToZero();
+//            game.removeRandomPermanent(1);
+////            game.printTable();
+//
+//            game.solveTable();
+////            game.printTable();
+//
+//            game.findOtherSolution();
+////            game.printTable();
+//
+//            if(!game.compareWithFirstSolution()){
+//                if(!game.areThereZeroes()){
+//                    game.setCacheAsCurrent();
+////                    game.printTable();
+//                    System.out.println((81-i+1));
+//                    break;
+//                }
+//            }
+//        }
+//
+//        game.printTable();
     }
 }
