@@ -3,10 +3,10 @@ import java.util.Random;
 public class SudokuTest {
     private final int rowLength = 9;
     private final int colLength = 9;
-    private int[][][] arr = new int[rowLength][colLength][2];
-    private int[][][] firstSolution = new int[rowLength][colLength][2];
-    private int[][][] cache = new int[rowLength][colLength][2];
-    private int[] select = new int[2];
+    private final int[][][] arr = new int[rowLength][colLength][2];
+    private final int[][][] firstSolution = new int[rowLength][colLength][2];
+    private final int[][][] cache = new int[rowLength][colLength][2];
+    private final int[] select = new int[2];
     private boolean isReversing = false;
     private boolean currentIterationFinished = false;
 
@@ -90,6 +90,14 @@ public class SudokuTest {
         }
     }
 
+    public void setAllPermanent(){
+        for(int i=0; i<9; ++i){
+            for(int j=0; j<9; ++j){
+                arr[i][j][1] = 1;
+            }
+        }
+    }
+
     public void setPermanent(int row, int col, int x){
         arr[row][col][0] = x;
         arr[row][col][1] = 1;
@@ -101,6 +109,8 @@ public class SudokuTest {
         arr[row][col][1] = 0;
     }
 
+
+    /*--------------------------------------------------------------*/
     public void setRandomPermanents(int howManyPermanents){
         Random rng = new Random();
 
@@ -123,59 +133,6 @@ public class SudokuTest {
                 setPermanent(randRow, randCol,  randNum);
             }
 
-        }
-    }
-
-    public void removeRandomPermanent(int howManyPermanents){
-        Random rng = new Random();
-
-        int randCol, randRow;
-
-        for(int i=0; i<howManyPermanents; ++i){
-            randRow = rng.nextInt(9);
-            randCol = rng.nextInt(9);
-            select[0] = randRow;
-            select[1] = randCol;
-
-            if(arr[randRow][randCol][1] != 1) {
-                --i;
-            }
-            else {
-                removePermanent(randRow, randCol);
-            }
-
-        }
-    }
-
-    public void saveToCache(){
-        for(int i=0; i<9; ++i){
-            for(int j=0; j<9; ++j){
-                cache[i][j][0] = arr[i][j][0];
-            }
-        }
-    }
-
-    public void setCacheAsCurrent(){
-        for(int i=0; i<9; ++i){
-            for(int j=0; j<9; ++j){
-                arr[i][j][0] = cache[i][j][0];
-            }
-        }
-    }
-
-    public void clearCache(){
-        for(int i=0; i<9; ++i){
-            for(int j=0; j<9; ++j){
-                cache[i][j][0] = 0;
-            }
-        }
-    }
-
-    public void setAllPermanent(){
-        for(int i=0; i<9; ++i){
-            for(int j=0; j<9; ++j){
-                arr[i][j][1] = 1;
-            }
         }
     }
 
@@ -230,6 +187,56 @@ public class SudokuTest {
             }
         }
     }
+
+    public void removeRandomPermanent(int howManyPermanents){
+        Random rng = new Random();
+
+        int randCol, randRow;
+
+        for(int i=0; i<howManyPermanents; ++i){
+            randRow = rng.nextInt(9);
+            randCol = rng.nextInt(9);
+            select[0] = randRow;
+            select[1] = randCol;
+
+            if(arr[randRow][randCol][1] != 1) {
+                --i;
+            }
+            else {
+                removePermanent(randRow, randCol);
+            }
+
+        }
+    }
+
+    /*--------------------------------------------------------------*/
+
+    public void saveToCache(){
+        for(int i=0; i<9; ++i){
+            for(int j=0; j<9; ++j){
+                cache[i][j][0] = arr[i][j][0];
+            }
+        }
+    }
+
+    public void setCacheAsCurrent(){
+        for(int i=0; i<9; ++i){
+            for(int j=0; j<9; ++j){
+                arr[i][j][0] = cache[i][j][0];
+            }
+        }
+    }
+
+    public void clearCache(){
+        for(int i=0; i<9; ++i){
+            for(int j=0; j<9; ++j){
+                cache[i][j][0] = 0;
+            }
+        }
+    }
+
+    /*--------------------------------------------------------------*/
+
 
     public void selectNext(){
 
@@ -364,7 +371,7 @@ public class SudokuTest {
 
         solveFunction();
     }
-//gsdkjfdgjhb
+
     public static void main(String[] args) {
 //        Scanner input = new Scanner(System.in);
 //        int x = 0;
