@@ -360,38 +360,45 @@ public class SudokuTest {
     public static void main(String[] args) {
         SudokuTest game = new SudokuTest();
 
-        game.resetTable();
-        game.setRandomX();
+        boolean isDifficultEnough = false;
+        int howManyHints = 0;
 
-        game.solveTable();
-        game.setFirstSolution();
-        game.setAllPermanent();
-        game.printTable();
-
-        game.removeRandomPermanent(9);
-        for(int i=10; i<=81; ++i){
-            game.setChangeableToZero();
-            game.removeRandomPermanent(1);
+        while (!isDifficultEnough) {
+            game.resetTable();
+            game.setRandomX();
 
             game.solveTable();
-            if(!game.compareWithFirstSolution()){
-                if(!game.areThereZeroes()){
-                    game.setCacheAsCurrent();
-                    System.out.println((81-i+1));
-                    break;
+            game.setFirstSolution();
+            game.setAllPermanent();
+
+            game.removeRandomPermanent(9);
+            for (int i = 10; i <= 81; ++i) {
+                game.setChangeableToZero();
+                game.removeRandomPermanent(1);
+
+                game.solveTable();
+                if (!game.compareWithFirstSolution()) {
+                    if (!game.areThereZeroes()) {
+                        game.setCacheAsCurrent();
+                        howManyHints = 81 - i + 1;
+                        break;
+                    }
+                }
+
+                game.findOtherSolution();
+                if (!game.compareWithFirstSolution()) {
+                    if (!game.areThereZeroes()) {
+                        game.setCacheAsCurrent();
+                        howManyHints = 81 - i + 1;
+                        break;
+                    }
                 }
             }
 
-            game.findOtherSolution();
-            if(!game.compareWithFirstSolution()){
-                if(!game.areThereZeroes()){
-                    game.setCacheAsCurrent();
-                    System.out.println((81-i+1));
-                    break;
-                }
-            }
+            if(howManyHints <= 30)
+                isDifficultEnough = true;
         }
-
+        System.out.println(howManyHints);
         game.printTable();
     }
 }
