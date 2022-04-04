@@ -11,6 +11,8 @@ public class SudokuTest {
     private boolean currentIterationFinished = false;
     private int howManyHints = 0;
 
+    private int testCount = 0;
+
     public SudokuTest(){
         resetTable();
     }
@@ -395,13 +397,19 @@ public class SudokuTest {
             }
             if(howManyHints <= howManyHintsMax && howManyHints >= howManyHintsMin)
                 isDifficultEnough = true;
+
+
+            if(++testCount == 1000){
+                System.out.println("Error! Sudoku takes too long to find! Try something easier");
+                break;
+            }
         }
     }
 
     public static void main(String[] args) {
         SudokuTest game = new SudokuTest();
 
-        game.setUpSudoku(0, 17);
+        game.setUpSudoku(0, 35);
         System.out.println(game.howManyHints);
         game.printTable();
     }
