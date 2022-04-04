@@ -9,6 +9,7 @@ public class SudokuTest {
     private final int[] select = new int[2]; //Using a "Select" to select specific tiles in a 9x9 Sudoku. Mainly used with selectNext() and selectBefore()
     private boolean isReversing = false;
     private boolean currentIterationFinished = false;
+    private int howManyHints = 0;
 
     public SudokuTest(){
         resetTable();
@@ -357,48 +358,51 @@ public class SudokuTest {
         }
     }
 
-    public static void main(String[] args) {
-        SudokuTest game = new SudokuTest();
-
+    public void setUpSudoku(int howManyHintsMin, int howManyHintsMax){
         boolean isDifficultEnough = false;
-        int howManyHints = 0;
+        howManyHints = 0;
 
         while (!isDifficultEnough) {
-            game.resetTable();
-            game.setRandomX();
+            resetTable();
+            setRandomX();
 
-            game.solveTable();
-            game.setFirstSolution();
-            game.setAllPermanent();
+            solveTable();
+            setFirstSolution();
+            setAllPermanent();
 
-            game.removeRandomPermanent(9);
+            removeRandomPermanent(9);
             for (int i = 10; i <= 81; ++i) {
-                game.setChangeableToZero();
-                game.removeRandomPermanent(1);
+                setChangeableToZero();
+                removeRandomPermanent(1);
 
-                game.solveTable();
-                if (!game.compareWithFirstSolution()) {
-                    if (!game.areThereZeroes()) {
-                        game.setCacheAsCurrent();
+                solveTable();
+                if (!compareWithFirstSolution()) {
+                    if (!areThereZeroes()) {
+                        setCacheAsCurrent();
                         howManyHints = 81 - i + 1;
                         break;
                     }
                 }
 
-                game.findOtherSolution();
-                if (!game.compareWithFirstSolution()) {
-                    if (!game.areThereZeroes()) {
-                        game.setCacheAsCurrent();
+                findOtherSolution();
+                if (!compareWithFirstSolution()) {
+                    if (!areThereZeroes()) {
+                        setCacheAsCurrent();
                         howManyHints = 81 - i + 1;
                         break;
                     }
                 }
             }
-
-            if(howManyHints <= 30)
+            if(howManyHints <= howManyHintsMax && howManyHints >= howManyHintsMin)
                 isDifficultEnough = true;
         }
-        System.out.println(howManyHints);
+    }
+
+    public static void main(String[] args) {
+        SudokuTest game = new SudokuTest();
+
+        game.setUpSudoku(0, 17);
+        System.out.println(game.howManyHints);
         game.printTable();
     }
 }
