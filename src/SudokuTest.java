@@ -113,46 +113,43 @@ public class SudokuTest {
     }
 
     /*Randomizer functions*/
-    public void setRandomPermanents(int howManyPermanents){
+    public void setRandomPermanents(int howManyPermanents) {
         Random rng = new Random();
 
         int randCol, randRow, randNum;
 
-        for(int i=0; i<howManyPermanents; ++i){
-            randNum = rng.nextInt(9)+1;
+        for (int i = 0; i < howManyPermanents; ++i) {
+            randNum = rng.nextInt(9) + 1;
             randRow = rng.nextInt(9);
             randCol = rng.nextInt(9);
             select[0] = randRow;
             select[1] = randCol;
 
-            if(arr[randRow][randCol][0] != 0) {
+            if (arr[randRow][randCol][0] != 0) {
                 --i;
-            }
-            else if( (checkCol(randRow, randCol, randNum)) || (checkRow(randRow, randCol, randNum)) || checkBox(randRow, randCol, randNum) ){
+            } else if ((checkCol(randRow, randCol, randNum)) || (checkRow(randRow, randCol, randNum)) || checkBox(randRow, randCol, randNum)) {
                 --i;
-            }
-            else {
-                setPermanent(randRow, randCol,  randNum);
+            } else {
+                setPermanent(randRow, randCol, randNum);
             }
 
         }
     }
-    public void setRandomDiagonal(){
+    public void setRandomDiagonal() {
         Random rng = new Random();
 
         int randNum;
 
-        for(int i=0; i<9; ++i){
-            for(int j=0; j<9; ++j){
-                if(i == j){
+        for (int i = 0; i < 9; ++i) {
+            for (int j = 0; j < 9; ++j) {
+                if (i == j) {
                     select[0] = i;
                     select[1] = j;
                     randNum = rng.nextInt(9) + 1;
 
-                    if( (checkBox(i, j, randNum)) ){
+                    if ((checkBox(i, j, randNum))) {
                         --i;
-                    }
-                    else {
+                    } else {
                         arr[i][j][0] = randNum;
                         arr[i][j][1] = 1;
                     }
@@ -160,25 +157,24 @@ public class SudokuTest {
             }
         }
     }
-    public void setRandomX(){
+    public void setRandomX() {
         setRandomDiagonal();
 
         Random rng = new Random();
 
         int randNum;
 
-        for(int i=0; i<9; ++i){
-            for(int j=0; j<9; ++j){
-                if( (i + j) == 8){
-                    if(i != j) {
+        for (int i = 0; i < 9; ++i) {
+            for (int j = 0; j < 9; ++j) {
+                if ((i + j) == 8) {
+                    if (i != j) {
                         select[0] = i;
                         select[1] = j;
                         randNum = rng.nextInt(9) + 1;
 
-                        if( (checkCol(i, j, randNum)) || (checkRow(i, j, randNum)) || checkBox(i, j, randNum) ){
+                        if ((checkCol(i, j, randNum)) || (checkRow(i, j, randNum)) || checkBox(i, j, randNum)) {
                             --i;
-                        }
-                        else {
+                        } else {
                             arr[i][j][0] = randNum;
                             arr[i][j][1] = 1;
                         }
@@ -187,21 +183,20 @@ public class SudokuTest {
             }
         }
     }
-    public void removeRandomPermanent(int howManyPermanents){
+    public void removeRandomPermanent(int howManyPermanents) {
         Random rng = new Random();
 
         int randCol, randRow;
 
-        for(int i=0; i<howManyPermanents; ++i){
+        for (int i = 0; i < howManyPermanents; ++i) {
             randRow = rng.nextInt(9);
             randCol = rng.nextInt(9);
             select[0] = randRow;
             select[1] = randCol;
 
-            if(arr[randRow][randCol][1] != 1) {
+            if (arr[randRow][randCol][1] != 1) {
                 --i;
-            }
-            else {
+            } else {
                 removePermanent(randRow, randCol);
             }
 
@@ -235,28 +230,26 @@ public class SudokuTest {
     }
 
     /*Select functions*/
-    public void selectNext(){
+    public void selectNext() {
 
-        if(!(select[1] == 8))
+        if (!(select[1] == 8)) {
             ++select[1];
-        else if(!(select[0] == 8)){
+        } else if (!(select[0] == 8)) {
             ++select[0];
             select[1] = 0;
-        }
-        else{
+        } else {
             currentIterationFinished = true;
         }
 
     }
-    public void selectBefore(){
+    public void selectBefore() {
 
-        if(!(select[1] == 0))
+        if (!(select[1] == 0)) {
             --select[1];
-        else if(!(select[0] == 0)){
+        } else if (!(select[0] == 0)) {
             --select[0];
             select[1] = 8;
-        }
-        else{
+        } else {
             currentIterationFinished = true;
         }
 
@@ -293,7 +286,7 @@ public class SudokuTest {
 
     /*Solving functions*/
 //    general solving algo
-    public void solveFunction(){
+    public void solveFunction() {
         while (!currentIterationFinished) {
 //            try {
 //                Thread.sleep(500);
@@ -304,12 +297,10 @@ public class SudokuTest {
             if (currentSelectedState() == 0) {
                 ++arr[select[0]][select[1]][0];
                 isReversing = false;
-            }
-            else {
+            } else {
                 if (!isReversing) {
                     selectNext();
-                }
-                else {
+                } else {
                     selectBefore();
                 }
                 continue;
@@ -331,9 +322,9 @@ public class SudokuTest {
                 }
             }
 
-            if (!isReversing)
+            if (!isReversing) {
                 selectNext();
-            else {
+            } else {
                 arr[select[0]][select[1]][0] = 0;
                 selectBefore();
             }
