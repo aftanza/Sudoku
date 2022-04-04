@@ -89,7 +89,7 @@ public class SudokuTest {
     }
 
 //    set all to non-changeable
-    public void setAllPermanent(){
+    public void setAllNonZeroPermanent(){
         for(int i=0; i<9; ++i){
             for(int j=0; j<9; ++j){
                 if(arr[i][j][0] != 0)
@@ -370,7 +370,7 @@ public class SudokuTest {
 
             solveTable();
             setFirstSolution();
-            setAllPermanent();
+            setAllNonZeroPermanent();
 
             removeRandomPermanent(9);
             for (int i = 10; i <= 81; ++i) {
