@@ -89,7 +89,8 @@ public class SudokuTest {
     public void setAllPermanent(){
         for(int i=0; i<9; ++i){
             for(int j=0; j<9; ++j){
-                arr[i][j][1] = 1;
+                if(arr[i][j][0] != 0)
+                    arr[i][j][1] = 1;
             }
         }
     }
@@ -369,42 +370,37 @@ public class SudokuTest {
         SudokuTest game = new SudokuTest();
 
         game.resetTable();
-//        game.printTable();
-//        game.setRandomPermanents(17);
-//        game.setRandomDiagonal();
         game.setRandomX();
+
         game.solveTable();
-        game.printTable();
         game.setFirstSolution();
         game.setAllPermanent();
+        game.printTable();
 
-        for(int i=1; i<=81; ++i){
+        game.removeRandomPermanent(9);
+        for(int i=10; i<=81; ++i){
             game.setChangeableToZero();
             game.removeRandomPermanent(1);
-//            game.printTable();
 
             game.solveTable();
-//            game.printTable();
-
-            game.findOtherSolution();
-//            game.printTable();
-
             if(!game.compareWithFirstSolution()){
                 if(!game.areThereZeroes()){
-                    game.setChangeableToZero();
-                    game.solveTable();
-                    if(!game.compareWithFirstSolution()){
-                        game.setCacheAsCurrent();
-//                      game.printTable();
-                        System.out.println((81-i+1));
-                        break;
-                    }
+                    game.setCacheAsCurrent();
+                    System.out.println((81-i+1));
+                    break;
+                }
+            }
+
+            game.findOtherSolution();
+            if(!game.compareWithFirstSolution()){
+                if(!game.areThereZeroes()){
+                    game.setCacheAsCurrent();
+                    System.out.println((81-i+1));
+                    break;
                 }
             }
         }
 
-        game.printTable();
-        game.solveTable();
         game.printTable();
     }
 }
