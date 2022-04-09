@@ -30,7 +30,6 @@ public class SudokuRun {
     }
 
     void doSinglePlayer(SudokuTest game){
-        game.implementHash("002030108040906051400050207090108130809011305060712040201070519081304060504090601130207080603080412071509010907041803010615020308120706050401190005060904020803071");
         System.out.println(game.getHowManyHints());
         game.printTable();
 
@@ -63,6 +62,7 @@ public class SudokuRun {
         Scanner input = new Scanner(System.in);
         SudokuTest game = new SudokuTest();
 
+//        game.implementHash("002030108040906051400050207090108130809011305060712040201070519081304060504090601130207080603080412071509010907041803010615020308120706050401190005060904020803071");
         game.setUpSudoku(0, 35);
 
         System.out.print("Multiplayer game? y/n: ");
