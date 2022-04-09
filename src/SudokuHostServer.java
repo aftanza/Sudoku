@@ -69,8 +69,10 @@ public class SudokuHostServer {
                     stringFromClient = in.readLine();
                 }
                 while (stringFromClient.equals(""));
-                if (stringFromClient.equals("END"))
+                if (stringFromClient.equals("END")) {
+                    System.out.println("Client terminated session...");
                     break;
+                }
                 System.out.println(stringFromClient);
             }
             catch (NullPointerException e){
@@ -80,7 +82,7 @@ public class SudokuHostServer {
     }
 
     public static void main(String[] args) throws IOException {
-        SudokuHostServer server = new SudokuHostServer(12345);
+        SudokuHostServer server = new SudokuHostServer(12520);
         server.startServer();
     }
 }

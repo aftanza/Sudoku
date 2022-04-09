@@ -44,8 +44,10 @@ public class SudokuClient {
                 }
                 while (stringFromHost.equals(""));
 
-                if(stringFromHost.equals("END"))
+                if(stringFromHost.equals("END")) {
+                    System.out.println("Host terminated session...");
                     break;
+                }
                 System.out.println(stringFromHost);
 
                 /*-----------------Get client input----------------------*/
@@ -61,7 +63,16 @@ public class SudokuClient {
     }
 
     public static void main(String[] args)throws IOException {
-        SudokuClient client = new SudokuClient("localhost", 12345);
+//        Scanner input = new Scanner(System.in);
+//        String ipaddress; int port;
+//
+//        System.out.println("Input ipaddress: ");
+//        ipaddress = input.nextLine();
+//        System.out.println("Input port");
+//        port = input.nextInt();
+//
+//        SudokuClient client = new SudokuClient(ipaddress, port);
+        SudokuClient client = new SudokuClient("localhost", 12520);
         client.startClient();
     }
 
