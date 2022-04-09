@@ -69,7 +69,6 @@ public class SudokuTest {
             }
         }
     }
-
 //    set all to 0 and changeable
     public void resetTable(){
         for(int i=0; i<rowLength; ++i){
@@ -91,9 +90,15 @@ public class SudokuTest {
     public void setTile(int row, int col, int x){
         if(arr[row][col][1] == 0)
             arr[row][col][0] = x;
+        else
+            System.out.println("Tile cannot be changed!");
     }
 
-//    set all to non-changeable
+    public int getHowManyHints() {
+        return howManyHints;
+    }
+
+    //    set all to non-changeable
     public void setAllNonZeroPermanent(){
         for(int i=0; i<9; ++i){
             for(int j=0; j<9; ++j){
@@ -413,13 +418,50 @@ public class SudokuTest {
 
     /*----------Multiplayer Part----------*/
 
-    private boolean multiplayer = false;
+    public String getHash(){
+        StringBuilder hash = new StringBuilder();
+        for(int i=0; i<9; ++i){
+            for(int j=0; j<9; ++j){
+                hash.append(arr[i][j][0]);
+                hash.append(arr[i][j][1]);
+            }
+        }
+        return hash.toString();
+    }
+    public void implementHash(String hash){
+        howManyHints = 1;
+        int counter = 0;
+        for(int i=0; i<9; ++i){
+            for(int j=0; j<9; ++j){
+                this.arr[i][j][0] = hash.charAt(counter++) - 48;
+                this.arr[i][j][1] = hash.charAt(counter++) - 48;
+                if(arr[i][j][1] == 1)
+                    ++howManyHints;
+            }
+        }
+    }
 
-    public static void main(String[] args) {
-        SudokuTest game = new SudokuTest();
+    /*----------Game logic----------*/
+    public boolean checkTable(){
+        select[0] = 0;
+        select[1] = 0;
+        currentIterationFinished = false;
 
-        game.setUpSudoku(0, 35);
-        System.out.println(game.howManyHints);
-        game.printTable();
+        while (!currentIterationFinished) {
+            if (arr[select[0]][select[1]][0] != 0) {
+                if(arr[select[0]][select[1]][1] == 0) {
+                    if (checkRow(select[0], select[1], arr[select[0]][select[1]][0]) || checkCol(select[0], select[1], arr[select[0]][select[1]][0]) || checkBox(select[0], select[1], arr[select[0]][select[1]][0])) {
+                        System.out.println("There is still an error somewhere! At Row " + select[0] + " and Col " + select[1]);
+                        return false;
+                    }
+                }
+                selectNext();
+            }
+            else{
+                System.out.println("There are still empty tiles!");
+                return false;
+            }
+        }
+        return true;
     }
 }

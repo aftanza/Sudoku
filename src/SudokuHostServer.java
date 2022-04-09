@@ -20,12 +20,16 @@ import java.util.Scanner;
 */
 
 public class SudokuHostServer {
-    private static int PORT;
+    private final int PORT;
     private BufferedReader in;
     private PrintWriter out;
+    private final String hash;
+    private final SudokuTest game;
 
-    SudokuHostServer(int port) {
+    SudokuHostServer(SudokuTest game, int port, String hash) {
         PORT = port;
+        this.hash = hash;
+        this.game = game;
     }
 
     public void startServer() throws IOException{
@@ -37,9 +41,8 @@ public class SudokuHostServer {
             try {
                 in = new BufferedReader(new InputStreamReader(s.getInputStream()));
                 out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(s.getOutputStream())), true);
-                System.out.println("prepared to take input");
 
-                gameLogic();
+                gameLogic2();
 
             }
             finally {
@@ -80,9 +83,111 @@ public class SudokuHostServer {
             }
         }
     }
+    private void gameLogic3() throws IOException{
+        out.println("Starting hash = " + "1..3.4.32.423.");
+        Scanner input = new Scanner(System.in);
+        while (true){
+            try {
+                /*-----------------Get host input------------------------*/
+                int stringFromHost = input.nextInt();
+                if (stringFromHost == -1)
+                    break;
+                out.println(stringFromHost);
 
-    public static void main(String[] args) throws IOException {
-        SudokuHostServer server = new SudokuHostServer(12520);
-        server.startServer();
+                /*-----------------Wait for client input----------------------*/
+                int stringFromClient = 0;
+                do {
+                    stringFromClient = in.read() - 48;
+                }
+                while (stringFromClient == 0);
+                if (stringFromClient == -1) {
+                    System.out.println("Client terminated session...");
+                    break;
+                }
+                System.out.println(stringFromClient);
+            }
+            catch (NullPointerException e){
+                break;
+            }
+        }
     }
+
+    boolean getHostInput(){
+        Scanner input = new Scanner(System.in);
+        int r, c, x;
+
+        r = input.nextInt();
+        if (r == -1) {
+            if (game.checkTable()) {
+                game.printTable();
+                out.println("WIN");
+                return true;
+            } else {
+                game.printTable();
+                out.println("SKIP");
+                return false;
+            }
+        }
+
+        c = input.nextInt();
+        x = input.nextInt();
+        game.setTile(r, c, x);
+        game.printTable();
+        out.println(game.getHash());
+        return false;
+    }
+    boolean getClientInput() throws IOException{
+        String str = "";
+        do{
+            try {
+                str = in.readLine();
+            }
+            catch (IOException ignore){}
+        }
+        while (str.equals(""));
+
+        if(str.equals("WIN")) {
+            game.printTable();
+            return true;
+        }
+        else if (str.equals("SKIP")){
+            game.printTable();
+            return false;
+        }
+        else{
+            game.implementHash(str);
+            game.printTable();
+            return false;
+        }
+    }
+
+    void gameLogic2()throws IOException{
+        game.implementHash(hash);
+        out.println(hash);
+
+        System.out.println(game.getHowManyHints());
+        game.printTable();
+
+        while (true){
+
+            System.out.println("At any point, if you want to check ans just put -1 as the only number");
+            System.out.println("Enter row, col, and num as such: x x x");
+
+            if(getHostInput())
+                break;
+
+            System.out.println("Waiting for other player.....");
+
+            if(getClientInput())
+                break;
+        }
+        System.out.println("Congrats!");
+    }
+
+
+
+//    public static void main(String[] args) throws IOException {
+//        SudokuHostServer server = new SudokuHostServer(12520);
+//        server.startServer();
+//    }
 }
