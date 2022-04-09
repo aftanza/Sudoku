@@ -88,6 +88,11 @@ public class SudokuTest {
         arr[row][col][1] = 0;
     }
 
+    public void setTile(int row, int col, int x){
+        if(arr[row][col][1] == 0)
+            arr[row][col][0] = x;
+    }
+
 //    set all to non-changeable
     public void setAllNonZeroPermanent(){
         for(int i=0; i<9; ++i){
@@ -405,6 +410,10 @@ public class SudokuTest {
             }
         }
     }
+
+    /*----------Multiplayer Part----------*/
+
+    private boolean multiplayer = false;
 
     public static void main(String[] args) {
         SudokuTest game = new SudokuTest();

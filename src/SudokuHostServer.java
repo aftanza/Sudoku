@@ -62,7 +62,8 @@ public class SudokuHostServer {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         SudokuHostServer server = new SudokuHostServer(12345);
+        server.startServer();
     }
 }

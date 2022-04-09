@@ -38,4 +38,9 @@ public class SudokuClient {
         out.println("END");
     }
 
+    public static void main(String[] args)throws IOException {
+        SudokuClient client = new SudokuClient("localhost", 12345);
+        client.startClient();
+    }
+
 }
