@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
 /*HOST MULTIPLAYER
 * Goal: to fill up Sudoku by Co-Op mode, each player taking turns
@@ -53,12 +54,28 @@ public class SudokuHostServer {
 
     private void gameLogic() throws IOException {
         out.println("Starting hash = " + "1..3.4.32.423.");
+        Scanner input = new Scanner(System.in);
+        String stringFromClient;
         while (true){
-            String str = in.readLine();
-            if(str.equals("END"))
+            try {
+                /*-----------------Get host input------------------------*/
+                String stringFromHost = input.nextLine();
+                if (stringFromHost.equals("END"))
+                    break;
+                out.println(stringFromHost);
+
+                /*-----------------Wait for client input----------------------*/
+                do {
+                    stringFromClient = in.readLine();
+                }
+                while (stringFromClient.equals(""));
+                if (stringFromClient.equals("END"))
+                    break;
+                System.out.println(stringFromClient);
+            }
+            catch (NullPointerException e){
                 break;
-            System.out.println("Echoing: " + str);
-            out.println(str);
+            }
         }
     }
 

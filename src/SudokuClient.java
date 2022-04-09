@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class SudokuClient {
     private static String ADDRESS;
@@ -21,6 +22,9 @@ public class SudokuClient {
             in = new BufferedReader(new InputStreamReader(s.getInputStream()));
             out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(s.getOutputStream())), true);
 
+            String stringFromHost = in.readLine();
+            System.out.println(stringFromHost);
+
             gameLogic();
         }
         finally {
@@ -30,12 +34,30 @@ public class SudokuClient {
     }
 
     private void gameLogic() throws IOException{
-        for(int i=1; i<=5; ++i){
-            out.println("test " + i);
-            String str = in.readLine();
-            System.out.println(str);
+        Scanner input = new Scanner(System.in);
+        String stringFromHost;
+        while (true){
+            try {
+                /*-----------------Wait for host input------------------------*/
+                do {
+                    stringFromHost = in.readLine();
+                }
+                while (stringFromHost.equals(""));
+
+                if(stringFromHost.equals("END"))
+                    break;
+                System.out.println(stringFromHost);
+
+                /*-----------------Get client input----------------------*/
+                String stringFromClient = input.nextLine();
+                if(stringFromClient.equals("END"))
+                    break;
+                out.println(stringFromClient);
+            }
+            catch (NullPointerException e){
+                break;
+            }
         }
-        out.println("END");
     }
 
     public static void main(String[] args)throws IOException {
