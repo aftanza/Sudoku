@@ -19,13 +19,13 @@ public class SudokuRun {
             server.startServer();
         }
         else {
-            String IP = input.nextLine();
             System.out.print("Enter IP address: ");
-            IP = input.nextLine();
+            String IP = input.nextLine();
 
             System.out.print("Enter port: ");
             port = input.nextInt();
             SudokuClient client = new SudokuClient(game,IP, port);
+            client.startClient();
         }
     }
 

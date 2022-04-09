@@ -42,7 +42,7 @@ public class SudokuHostServer {
                 in = new BufferedReader(new InputStreamReader(s.getInputStream()));
                 out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(s.getOutputStream())), true);
 
-                gameLogic2();
+                gameLogic();
 
             }
             finally {
@@ -52,63 +52,6 @@ public class SudokuHostServer {
         finally {
             ss.close();
             System.out.println("server closing...");
-        }
-    }
-
-    private void gameLogic() throws IOException {
-        out.println("Starting hash = " + "1..3.4.32.423.");
-        Scanner input = new Scanner(System.in);
-        String stringFromClient;
-        while (true){
-            try {
-                /*-----------------Get host input------------------------*/
-                String stringFromHost = input.nextLine();
-                if (stringFromHost.equals("END"))
-                    break;
-                out.println(stringFromHost);
-
-                /*-----------------Wait for client input----------------------*/
-                do {
-                    stringFromClient = in.readLine();
-                }
-                while (stringFromClient.equals(""));
-                if (stringFromClient.equals("END")) {
-                    System.out.println("Client terminated session...");
-                    break;
-                }
-                System.out.println(stringFromClient);
-            }
-            catch (NullPointerException e){
-                break;
-            }
-        }
-    }
-    private void gameLogic3() throws IOException{
-        out.println("Starting hash = " + "1..3.4.32.423.");
-        Scanner input = new Scanner(System.in);
-        while (true){
-            try {
-                /*-----------------Get host input------------------------*/
-                int stringFromHost = input.nextInt();
-                if (stringFromHost == -1)
-                    break;
-                out.println(stringFromHost);
-
-                /*-----------------Wait for client input----------------------*/
-                int stringFromClient = 0;
-                do {
-                    stringFromClient = in.read() - 48;
-                }
-                while (stringFromClient == 0);
-                if (stringFromClient == -1) {
-                    System.out.println("Client terminated session...");
-                    break;
-                }
-                System.out.println(stringFromClient);
-            }
-            catch (NullPointerException e){
-                break;
-            }
         }
     }
 
@@ -136,7 +79,7 @@ public class SudokuHostServer {
         out.println(game.getHash());
         return false;
     }
-    boolean getClientInput() throws IOException{
+    boolean getClientInput(){
         String str = "";
         do{
             try {
@@ -161,7 +104,7 @@ public class SudokuHostServer {
         }
     }
 
-    void gameLogic2()throws IOException{
+    void gameLogic(){
         game.implementHash(hash);
         out.println(hash);
 
@@ -183,7 +126,6 @@ public class SudokuHostServer {
         }
         System.out.println("Congrats!");
     }
-
 
 
 //    public static void main(String[] args) throws IOException {
