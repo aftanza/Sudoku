@@ -19,6 +19,13 @@ public class SudokuTest {
         resetTable();
     }
 
+    public int getArrNumAt(int row, int col){
+        return arr[row][col][0];
+    }
+    public int getArrStateAt(int row, int col){
+        return arr[row][col][1];
+    }
+
     /*Check row/col/3x3 box for conflicting numbers*/
     public boolean checkRow(int row, int col, int numToCheck){
         for(int i=0; i<9; ++i){
@@ -63,7 +70,7 @@ public class SudokuTest {
     }
 
 //    Set all the changeable (arr[x][x][1] == 0) to zero
-    public void setChangeableToZero(){
+    public void setAllChangeableToZero(){
         for(int i=0; i<9; ++i){
             for(int j=0; j<9; ++j){
                 if(arr[i][j][1] == 0)
@@ -220,7 +227,7 @@ public class SudokuTest {
 
     /*Cache functions*/
 //    save current table to an array called cache
-    public void saveToCache(){
+    private void saveToCache(){
         for(int i=0; i<9; ++i){
             for(int j=0; j<9; ++j){
                 cache[i][j][0] = arr[i][j][0];
@@ -228,7 +235,7 @@ public class SudokuTest {
         }
     }
 //    set array in cache as current table
-    public void setCacheAsCurrent(){
+    private void setCacheAsCurrent(){
         for(int i=0; i<9; ++i){
             for(int j=0; j<9; ++j){
                 arr[i][j][0] = cache[i][j][0];
@@ -236,7 +243,7 @@ public class SudokuTest {
         }
     }
 //    reset the cache
-    public void clearCache(){
+    private void clearCache(){
         for(int i=0; i<9; ++i){
             for(int j=0; j<9; ++j){
                 cache[i][j][0] = 0;
@@ -245,7 +252,7 @@ public class SudokuTest {
     }
 
     /*Select functions*/
-    public void selectNext() {
+    private void selectNext() {
 
         if (!(select[1] == 8)) {
             ++select[1];
@@ -257,7 +264,7 @@ public class SudokuTest {
         }
 
     }
-    public void selectBefore() {
+    private void selectBefore() {
 
         if (!(select[1] == 0)) {
             --select[1];
@@ -271,10 +278,10 @@ public class SudokuTest {
     }
 
     /*Get current selected state*/
-    public int currentSelectedNum(){
+    private int currentSelectedNum(){
         return arr[select[0]][select[1]][0];
     }
-    public int currentSelectedState(){
+    private int currentSelectedState(){
         return arr[select[0]][select[1]][1];
     }
 
@@ -372,6 +379,12 @@ public class SudokuTest {
         }
     }
 
+    /*Set up sudoku
+    * Conditions needed to be fulfilled:
+    *   Random
+    *   Only has 1 solution
+    *   If it takes more than 1000 sudoku to find within the specified hint range, return the latest sudoku
+    * */
     public void setUpSudoku(int howManyHintsMin, int howManyHintsMax){
         boolean isDifficultEnough = false;
         howManyHints = 0;
@@ -384,9 +397,8 @@ public class SudokuTest {
             setFirstSolution();
             setAllNonZeroPermanent();
 
-            removeRandomPermanent(9);
-            for (int i = 10; i <= 81; ++i) {
-                setChangeableToZero();
+            for (int i = 0; i < 81; ++i) {
+                setAllChangeableToZero();
                 removeRandomPermanent(1);
 
                 solveTable();
@@ -465,5 +477,17 @@ public class SudokuTest {
             }
         }
         return true;
+    }
+
+    public static void main(String[] args) {
+        SudokuTest game = new SudokuTest();
+        game.resetTable();
+
+        game.setUpSudoku(69, 81);
+        game.printTable();
+
+        game.solveTable();
+        game.printTable();
+
     }
 }

@@ -2,6 +2,8 @@ package com.sudoku.gui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 
 public class GameBoard extends JPanel {
    // Name-constants for the game board properties
@@ -12,12 +14,13 @@ public class GameBoard extends JPanel {
    public static final int CELL_SIZE = 60;   // Cell width/height in pixels
    public static final int BOARD_WIDTH  = CELL_SIZE * GRID_SIZE;
    public static final int BOARD_HEIGHT = CELL_SIZE * GRID_SIZE;
-                                             // Board width/height in pixels
+   // Board width/height in pixels
 
    // The game board composes of 9x9 "Customized" JTextFields,
    private Cell[][] cells = new Cell[GRID_SIZE][GRID_SIZE];
    // It also contains a Puzzle
    private Puzzle puzzle = new Puzzle();
+   public TextArea taDisplay;
 
    // Constructor
    public GameBoard() {
@@ -31,10 +34,6 @@ public class GameBoard extends JPanel {
          }
       }
 
-      // [TODO 3] Allocate a common listener as the ActionEvent listener for all the
-      //  Cells (JTextFields)
-      // [TODO 4] Every editable cell adds this common listener
-
       super.setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
    }
 
@@ -45,9 +44,27 @@ public class GameBoard extends JPanel {
     */
    public void init() {
       // Get a new puzzle
-      puzzle.newPuzzle(2);
+      puzzle.newPuzzle(SudokuDifficulty.EASY);
+
+      CellInputListener listener = new CellInputListener();
 
       // Based on the puzzle, initialize all the cells.
+      for (int row = 0; row < GRID_SIZE; ++row) {
+         for (int col = 0; col < GRID_SIZE; ++col) {
+            cells[row][col].init(puzzle.numbers[row][col], puzzle.isShown[row][col]);
+         }
+      }
+
+      for (int row = 0; row < GRID_SIZE; row++) {
+         for (int col = 0; col < GRID_SIZE; col++) {
+            if (cells[row][col].isEditable()) {
+               cells[row][col].addKeyListener(listener);   // For all editable rows and cols
+            }
+         }
+      }
+   }
+
+   public void reset(){
       for (int row = 0; row < GRID_SIZE; ++row) {
          for (int col = 0; col < GRID_SIZE; ++col) {
             cells[row][col].init(puzzle.numbers[row][col], puzzle.isShown[row][col]);
@@ -70,6 +87,31 @@ public class GameBoard extends JPanel {
       return true;
    }
 
-   // [TODO 2] Define a Listener Inner Class
-   // ......
+   private class CellInputListener implements KeyListener {
+      @Override
+
+      public void keyTyped(KeyEvent e) {
+         // Get a reference of the JTextField that triggers this action event
+         Cell sourceCell = (Cell)e.getSource();
+
+         // Retrieve the int entered
+         int numberIn = (int)e.getKeyChar()-'0';
+         // For debugging
+         System.out.println("You entered " + numberIn);
+         //taDisplay.append("You have typed " + numberIn + "\n");
+
+         if (numberIn == sourceCell.number) {
+            sourceCell.status = CellStatus.CORRECT_GUESS;
+         } else {
+            sourceCell.status =  CellStatus.WRONG_GUESS;
+         }
+         sourceCell.paint();
+         if (isSolved()) {
+            JOptionPane.showMessageDialog(null, "Congratulation!");
+         }
+
+      }
+      @Override public void keyPressed(KeyEvent evt) { }
+      @Override public void keyReleased(KeyEvent evt) { }
+   }
 }
