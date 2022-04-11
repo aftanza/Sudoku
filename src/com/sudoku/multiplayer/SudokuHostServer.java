@@ -1,3 +1,7 @@
+package com.sudoku.multiplayer;
+
+import com.sudoku.sudokulogic.SudokuTest;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -26,7 +30,7 @@ public class SudokuHostServer {
     private final String hash;
     private final SudokuTest game;
 
-    SudokuHostServer(SudokuTest game, int port, String hash) {
+    public SudokuHostServer(SudokuTest game, int port, String hash) {
         PORT = port;
         this.hash = hash;
         this.game = game;
@@ -129,7 +133,7 @@ public class SudokuHostServer {
 
 
 //    public static void main(String[] args) throws IOException {
-//        SudokuHostServer server = new SudokuHostServer(12520);
+//        com.sudoku.multiplayer.SudokuHostServer server = new com.sudoku.multiplayer.SudokuHostServer(12520);
 //        server.startServer();
 //    }
 }

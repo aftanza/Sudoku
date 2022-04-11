@@ -1,3 +1,5 @@
+package com.sudoku.sudokulogic;
+
 import java.util.Random;
 
 public class SudokuTest {

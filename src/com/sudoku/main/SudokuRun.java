@@ -1,3 +1,9 @@
+package com.sudoku.main;
+
+import com.sudoku.multiplayer.SudokuClient;
+import com.sudoku.multiplayer.SudokuHostServer;
+import com.sudoku.sudokulogic.SudokuTest;
+
 import java.io.IOException;
 import java.util.Scanner;
 

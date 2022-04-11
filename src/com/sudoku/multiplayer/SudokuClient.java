@@ -1,3 +1,7 @@
+package com.sudoku.multiplayer;
+
+import com.sudoku.sudokulogic.SudokuTest;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -10,7 +14,7 @@ public class SudokuClient {
     private PrintWriter out;
     private final SudokuTest game;
 
-    SudokuClient(SudokuTest game, String address, int port){
+    public SudokuClient(SudokuTest game, String address, int port){
         PORT = port;
         ADDRESS = address;
         this.game = game;
@@ -104,8 +108,8 @@ public class SudokuClient {
     }
 
 //    public static void main(String[] args)throws IOException {
-//        SudokuTest game = new SudokuTest();
-//        SudokuClient client = new SudokuClient(game, "localhost", 12520);
+//        com.sudoku.sudokulogic.SudokuTest game = new com.sudoku.sudokulogic.SudokuTest();
+//        com.sudoku.multiplayer.SudokuClient client = new com.sudoku.multiplayer.SudokuClient(game, "localhost", 12520);
 //        client.startClient();
 //    }
 
