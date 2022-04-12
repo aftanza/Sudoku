@@ -10,12 +10,11 @@ public class Puzzle{
 
    boolean[][] isShown = new boolean[GameBoard.GRID_SIZE][GameBoard.GRID_SIZE];
 
-   public SudokuTest game;
+   public SudokuTest game = new SudokuTest();
 
    // Constructor
    public Puzzle() {
       super();  // JPanel
-      game = new SudokuTest();
    }
 
    public void newPuzzle(SudokuDifficulty difficulty) {
@@ -28,6 +27,10 @@ public class Puzzle{
       }
 
       game.solveTable();
+      //for some reason sometimes sudokusolver wont work, confusing
+      if(game.areThereZeroes())
+         game.solveTable();
+      game.printTable();
 
       for (int row = 0; row < GameBoard.GRID_SIZE; ++row) {
          for (int col = 0; col < GameBoard.GRID_SIZE; ++col) {
@@ -36,6 +39,17 @@ public class Puzzle{
          }
       }
 
+   }
+
+   public void setPuzzleUsingHash(String hash){
+      game.implementHash(hash);
+
+      for (int row = 0; row < GameBoard.GRID_SIZE; ++row) {
+         for (int col = 0; col < GameBoard.GRID_SIZE; ++col) {
+            numbers[row][col] = game.getArrNumAt(row, col);
+            isShown[row][col] = game.getArrStateAt(row, col) == 1;
+         }
+      }
    }
 
    public int getHowManyHints(){

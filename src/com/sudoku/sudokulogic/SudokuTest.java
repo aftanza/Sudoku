@@ -483,7 +483,7 @@ public class SudokuTest {
         SudokuTest game = new SudokuTest();
         game.resetTable();
 
-        game.setUpSudoku(69, 81);
+        game.implementHash("211131415161810071518161117191213141710041218131115100312151914171618111006111310051714100007191611100002100610081719121001100915171813111416121113121006141917181");
         game.printTable();
 
         game.solveTable();

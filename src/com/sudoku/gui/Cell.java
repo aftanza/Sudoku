@@ -13,7 +13,7 @@ public class Cell extends JTextField {
    public static final Font FONT_NUMBERS = new Font("Monospaced", Font.BOLD, 24);
 
 
-   int row, col; 
+   public int row, col;
    int number;    
    CellStatus status;
 
