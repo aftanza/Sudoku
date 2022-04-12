@@ -9,6 +9,8 @@ public class SudokuMain extends JFrame {
     GameBoard board = new GameBoard();
     private Label lblHintCount;    // Declare a Label component
     private TextField tfHintCount; // Declare a TextField component
+    public int port;
+    public String IP;
 
 
     // Constructor
@@ -17,18 +19,6 @@ public class SudokuMain extends JFrame {
         cp.setLayout(new BorderLayout());
 
         cp.add(board, BorderLayout.CENTER);
-
-        JPanel btnPanel = new JPanel(new FlowLayout());
-
-        JButton btnReset = new JButton("Reset");
-        btnPanel.add(btnReset);
-        btnReset.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                board.reset();
-            }
-        });
-
 
         JPanel hintCount = new JPanel(new FlowLayout());
 
@@ -42,19 +32,76 @@ public class SudokuMain extends JFrame {
         cp.add(hintCount,BorderLayout.SOUTH);
 
 
+
+        JPanel btnPanel = new JPanel(new FlowLayout());
+
+
+        JButton btnReset = new JButton("Reset");
         JButton btnNewGame = new JButton("New Game");
+        JButton btnSubmit = new JButton("Submit");
+
+        btnSubmit.setVisible(false);
+
+        btnPanel.add(btnReset);
+        btnReset.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                board.reset();
+            }
+        });
+
+
         btnNewGame.setSize(40, 20);
         btnPanel.add(btnNewGame);
         btnNewGame.addActionListener(new ActionListener() {
             @Override
 
             public void actionPerformed(ActionEvent evt) {
-                Object[] options = { "HARD", "MEDIUM", "LUKEWARM",  "EASY" };
-                int difficultyLevel = JOptionPane.showOptionDialog(null, "Select difficulty level", "Warning",
+                Object[] mode = { "MULTIPLAYER", "SINGLEPLAYER"};
+                int modeSelected = JOptionPane.showOptionDialog(null, "Select mode", "Warning",
                         JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
-                        null, options, options[3]);
-                board.init(difficultyLevel);
+                        null, mode, mode[1]);
+                System.out.println(modeSelected);
+                if (modeSelected == 1)
+                {
+                    Object[] options = { "HARD", "MEDIUM", "LUKEWARM",  "EASY" };
+                    int difficultyLevel = JOptionPane.showOptionDialog(null, "Select difficulty level", "Warning",
+                            JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+                            null, options, options[3]);
+                    board.init(difficultyLevel);
+                    btnSubmit.setVisible(false);
+                }
+                else
+                {
+                    Object[] selectHost = { "JOIN", "HOST"};
+                    int hostSelected = JOptionPane.showOptionDialog(null, "Host or join", "Warning",
+                            JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+                            null, selectHost, selectHost[1]);
+                    if (hostSelected == 1)
+                    {
+                        port = Integer.valueOf(JOptionPane.showInputDialog("Enter port"));
+                        System.out.println(port);
+                    }
+                    else
+                    {
+                        IP = JOptionPane.showInputDialog("Enter IP");
+                        System.out.println(IP);
+                        port = Integer.valueOf(JOptionPane.showInputDialog("Enter port"));
+                        System.out.println(port);
+
+                    }
+                    btnSubmit.setVisible(true);
+                }
                 tfHintCount.setText(String.valueOf(board.getHowManyHints()));
+            }
+        });
+
+
+        btnPanel.add(btnSubmit);
+        btnSubmit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                board.reset(); //t5e4rthjdrgthjddryjtrtyjfrtyjdrtyjdtyjdrtjrtjdrtyjdtyj
             }
         });
 
@@ -80,5 +127,10 @@ public class SudokuMain extends JFrame {
         });
     }
 }
+
+
+
+
+
 
 
