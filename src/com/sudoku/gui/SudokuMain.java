@@ -7,6 +7,8 @@ import java.awt.event.*;
 public class SudokuMain extends JFrame {
     // private variables
     GameBoard board = new GameBoard();
+    private Label lblHintCount;    // Declare a Label component
+    private TextField tfHintCount; // Declare a TextField component
 
 
     // Constructor
@@ -27,6 +29,19 @@ public class SudokuMain extends JFrame {
             }
         });
 
+
+        JPanel hintCount = new JPanel(new FlowLayout());
+
+        lblHintCount = new Label("Hint count");  // construct the Label component
+        hintCount.add(lblHintCount);                    // "super" Frame container adds Label component
+
+        tfHintCount = new TextField(""); // construct the TextField component with initial text
+        tfHintCount.setEditable(false);       // set to read-only
+
+        hintCount.add(tfHintCount);
+        cp.add(hintCount,BorderLayout.SOUTH);
+
+
         JButton btnNewGame = new JButton("New Game");
         btnNewGame.setSize(40, 20);
         btnPanel.add(btnNewGame);
@@ -39,13 +54,14 @@ public class SudokuMain extends JFrame {
                         JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
                         null, options, options[3]);
                 board.init(difficultyLevel);
+                tfHintCount.setText(String.valueOf(board.getHowManyHints()));
             }
         });
 
         cp.add(btnPanel,BorderLayout.EAST);
-        JPanel hintCount = new JPanel(new FlowLayout());
 
         board.init(3);
+        tfHintCount.setText(String.valueOf(board.getHowManyHints()));
 
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

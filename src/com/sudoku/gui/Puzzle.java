@@ -10,16 +10,16 @@ public class Puzzle{
 
    boolean[][] isShown = new boolean[GameBoard.GRID_SIZE][GameBoard.GRID_SIZE];
 
+   SudokuTest game;
+
    // Constructor
    public Puzzle() {
       super();  // JPanel
+      game = new SudokuTest();
    }
 
    public void newPuzzle(SudokuDifficulty difficulty) {
       // Hardcoded here for simplicity.
-
-      SudokuTest game = new SudokuTest();
-
       switch (difficulty){
          case HARD -> game.setUpSudoku(0, 35);
          case MEDIUM -> game.setUpSudoku(36, 51);
@@ -38,5 +38,11 @@ public class Puzzle{
 
    }
 
+   public int getHowManyHints(){
+      return game.getHowManyHints();
+   }
+
    //(For advanced students) use singleton design pattern for this class
 }
+
+

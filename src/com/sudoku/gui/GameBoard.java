@@ -19,7 +19,7 @@ public class GameBoard extends JPanel {
    // The game board composes of 9x9 "Customized" JTextFields,
    private Cell[][] cells = new Cell[GRID_SIZE][GRID_SIZE];
    // It also contains a Puzzle
-   private Puzzle puzzle = new Puzzle();
+   public Puzzle puzzle = new Puzzle();
    public TextArea taDisplay;
 
    // Constructor
@@ -84,7 +84,6 @@ public class GameBoard extends JPanel {
       }
    }
 
-
    public boolean isSolved() {
       for (int row = 0; row < GRID_SIZE; ++row) {
          for (int col = 0; col < GRID_SIZE; ++col) {
@@ -94,6 +93,10 @@ public class GameBoard extends JPanel {
          }
       }
       return true;
+   }
+
+   public int getHowManyHints(){
+      return puzzle.getHowManyHints();
    }
 
    private class CellInputListener implements KeyListener {
