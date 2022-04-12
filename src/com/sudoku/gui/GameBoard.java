@@ -37,14 +37,26 @@ public class GameBoard extends JPanel {
       super.setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
    }
 
-   /**
-    * Initialize the puzzle number, status, background/foreground color,
-    *   of all the cells from puzzle[][] and isRevealed[][].
-    * Call to start a new game.
-    */
-   public void init() {
+   public void init(int level) {
       // Get a new puzzle
-      puzzle.newPuzzle(SudokuDifficulty.HARD);
+      switch(level){
+         case 3:
+            puzzle.newPuzzle(SudokuDifficulty.EASY);
+            break;
+         case 2:
+            puzzle.newPuzzle(SudokuDifficulty.LUKEWARM);
+            break;
+         case 1:
+            puzzle.newPuzzle(SudokuDifficulty.MEDIUM);
+            break;
+         case 0:
+            puzzle.newPuzzle(SudokuDifficulty.HARD);
+            break;
+         default:
+            puzzle.newPuzzle(SudokuDifficulty.EASY);
+            break;
+      }
+
 
       CellInputListener listener = new CellInputListener();
 
@@ -72,10 +84,7 @@ public class GameBoard extends JPanel {
       }
    }
 
-   /**
-    * Return true if the puzzle is solved
-    * i.e., none of the cell have status of NO_GUESS or WRONG_GUESS
-    */
+
    public boolean isSolved() {
       for (int row = 0; row < GRID_SIZE; ++row) {
          for (int col = 0; col < GRID_SIZE; ++col) {
@@ -115,3 +124,5 @@ public class GameBoard extends JPanel {
       @Override public void keyReleased(KeyEvent evt) { }
    }
 }
+
+

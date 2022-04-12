@@ -4,9 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-/**
- * The main Sudoku program
- */
 public class SudokuMain extends JFrame {
     // private variables
     GameBoard board = new GameBoard();
@@ -35,15 +32,20 @@ public class SudokuMain extends JFrame {
         btnPanel.add(btnNewGame);
         btnNewGame.addActionListener(new ActionListener() {
             @Override
+
             public void actionPerformed(ActionEvent evt) {
-                board.init();
+                Object[] options = { "HARD", "MEDIUM", "LUKEWARM",  "EASY" };
+                int difficultyLevel = JOptionPane.showOptionDialog(null, "Select difficulty level", "Warning",
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+                        null, options, options[3]);
+                board.init(difficultyLevel);
             }
         });
 
         cp.add(btnPanel,BorderLayout.EAST);
         JPanel hintCount = new JPanel(new FlowLayout());
 
-        board.init();
+        board.init(3);
 
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -52,7 +54,7 @@ public class SudokuMain extends JFrame {
         this.setLocationRelativeTo(null);
     }
 
-    /** The entry main() entry method */
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -62,3 +64,5 @@ public class SudokuMain extends JFrame {
         });
     }
 }
+
+
