@@ -8,20 +8,20 @@ import java.net.Socket;
 import java.util.Scanner;
 
 /*HOST MULTIPLAYER
-* Goal: to fill up Sudoku by Co-Op mode, each player taking turns
-* Restrictions:
-* Can only run in LAN
-* Can only connect to 1 other device
-*
-* Logistics:
-*   Two devices connect to each other, one will be the host and the other will be the client
-*       The host is responsible for making the initial table
-*       The host will host the server, and the client just have to connect
-*   For each change made to the table, the table will be relayed to the other device in the form of a hash
-*   The device receives the hash and updates its table accordingly
-*   The game will end if the sudoku is completed or any player gives up
-*
-*/
+ * Goal: to fill up Sudoku by Co-Op mode, each player taking turns
+ * Restrictions:
+ * Can only run in LAN
+ * Can only connect to 1 other device
+ *
+ * Logistics:
+ *   Two devices connect to each other, one will be the host and the other will be the client
+ *       The host is responsible for making the initial table
+ *       The host will host the server, and the client just have to connect
+ *   For each change made to the table, the table will be relayed to the other device in the form of a hash
+ *   The device receives the hash and updates its table accordingly
+ *   The game will end if the sudoku is completed or any player gives up
+ *
+ */
 
 public class SudokuHostServer {
     private final int PORT;
