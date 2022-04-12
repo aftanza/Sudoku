@@ -1,9 +1,12 @@
 package com.sudoku.gui;
 
+import java.io.*;
+import java.net.URL;
+import javax.sound.sampled.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
 
 public class SudokuMain extends JFrame {
     // private variables
@@ -133,6 +136,23 @@ public class SudokuMain extends JFrame {
             }
         });
 
+        try {
+            // Open an audio input stream.
+            URL url = this.getClass().getResource("soundtrack.wav");
+//            System.out.println(getClass());
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
+            // Get a sound clip resource.
+            Clip clip = AudioSystem.getClip();
+            // Open audio clip and load samples from the audio input stream.
+            clip.open(audioIn);
+            clip.start();
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        }
 
         btnNewGame.setSize(40, 20);
         btnPanel.add(btnNewGame);
