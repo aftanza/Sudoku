@@ -27,7 +27,10 @@ public class Puzzle{
          case EASY -> game.setUpSudoku(69, 81);
       }
 
+      //for some reason this be like this
       game.solveTable();
+      if(game.areThereZeroes())
+         game.solveTable();
 
       for (int row = 0; row < GameBoard.GRID_SIZE; ++row) {
          for (int col = 0; col < GameBoard.GRID_SIZE; ++col) {
@@ -36,6 +39,17 @@ public class Puzzle{
          }
       }
 
+   }
+
+   public void setPuzzleUsingHash(String hash){
+      game.implementHash(hash);
+
+      for (int row = 0; row < GameBoard.GRID_SIZE; ++row) {
+         for (int col = 0; col < GameBoard.GRID_SIZE; ++col) {
+            numbers[row][col] = game.getArrNumAt(row, col);
+            isShown[row][col] = game.getArrStateAt(row, col) == 1;
+         }
+      }
    }
 
    public int getHowManyHints(){

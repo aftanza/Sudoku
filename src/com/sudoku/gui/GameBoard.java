@@ -7,7 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import javax.swing.*;
 
 public class GameBoard extends JPanel {
    // Name-constants for the game board properties
@@ -82,42 +81,37 @@ public class GameBoard extends JPanel {
 
    //Host
    public void init(int level, int port) throws IOException {
-      // Get a new puzzle
-      switch (level) {
-         case 3:
-            puzzle.newPuzzle(SudokuDifficulty.EASY);
-            break;
-         case 2:
-            puzzle.newPuzzle(SudokuDifficulty.LUKEWARM);
-            break;
-         case 1:
-            puzzle.newPuzzle(SudokuDifficulty.MEDIUM);
-            break;
-         case 0:
-            puzzle.newPuzzle(SudokuDifficulty.HARD);
-            break;
-         default:
-            puzzle.newPuzzle(SudokuDifficulty.EASY);
-            break;
-      }
+      init(level);
+
+      String puzzleHash = puzzle.game.getHash();
+      SudokuHostServer server = new SudokuHostServer(puzzle.game, port, puzzleHash);
+      server.startServer();
+      System.out.println(puzzleHash);
+      server.sendHashToClient();
+   }
+
+   //Joining
+   public void init(int port, String IP)throws IOException {
+      SudokuClient client = new SudokuClient(IP, port);
+      client.startClient();
+      puzzle.setPuzzleUsingHash(client.game.getHash());
+
+      CellInputListener listener = new CellInputListener();
+
 
       for (int row = 0; row < GRID_SIZE; ++row) {
          for (int col = 0; col < GRID_SIZE; ++col) {
             cells[row][col].init(puzzle.numbers[row][col], puzzle.isShown[row][col]);
          }
       }
-      String puzzleHash = puzzle.game.getHash();
-      SudokuHostServer server = new SudokuHostServer(puzzle.game, port, puzzleHash);
-      server.startServer();
-      System.out.println(puzzleHash);
 
-
-   }
-
-   //Joining
-   public void init(int port, String IP)throws IOException {
-      SudokuClient client = new SudokuClient(puzzle.game,IP, port);
-      client.startClient();
+      for (int row = 0; row < GRID_SIZE; row++) {
+         for (int col = 0; col < GRID_SIZE; col++) {
+            if (cells[row][col].isEditable()) {
+               cells[row][col].addKeyListener(listener);   // For all editable rows and cols
+            }
+         }
+      }
    }
 
    public void reset(){
@@ -155,6 +149,7 @@ public class GameBoard extends JPanel {
          // For debugging
 //         System.out.println("You entered " + numberIn);
          //taDisplay.append("You have typed " + numberIn + "\n");
+//         String input  = sourceCell.row + " " + sourceCell.col + " " + numberIn;
 
          if (numberIn == sourceCell.number) {
             sourceCell.status = CellStatus.CORRECT_GUESS;
@@ -170,6 +165,8 @@ public class GameBoard extends JPanel {
       @Override public void keyPressed(KeyEvent evt) { }
       @Override public void keyReleased(KeyEvent evt) { }
    }
+
+
 }
 
 

@@ -16,6 +16,7 @@ public class SudokuMain extends JFrame {
 
     // Constructor
     public SudokuMain() {
+
         Container cp = getContentPane();
         cp.setLayout(new BorderLayout());
 
@@ -32,15 +33,96 @@ public class SudokuMain extends JFrame {
         hintCount.add(tfHintCount);
         cp.add(hintCount,BorderLayout.SOUTH);
 
+        JMenuBar menuBar;   // the menu-bar
+        JMenu menu;         // each menu in the menu-bar
+        JMenuItem menuItem; // an item in a menu
 
-
-        JPanel btnPanel = new JPanel(new FlowLayout());
-
+        menuBar = new JMenuBar();
 
         JButton btnReset = new JButton("Reset");
         JButton btnNewGame = new JButton("New Game");
         JButton btnSubmit = new JButton("Submit");
+        JButton btnGetHash = new JButton("GetHash");
 
+        // First Menu
+        menu = new JMenu("File");
+        menu.setMnemonic(KeyEvent.VK_A);  // alt short-cut key
+        menuBar.add(menu);  // the menu-bar adds this menu
+
+        menuItem = new JMenuItem("New Game", KeyEvent.VK_N);
+        menu.add(menuItem); // the menu adds this item
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                Object[] mode = { "MULTIPLAYER", "SINGLEPLAYER"};
+                int modeSelected = JOptionPane.showOptionDialog(null, "Select mode", "Warning",
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+                        null, mode, mode[1]);
+                System.out.println(modeSelected);
+                if (modeSelected == 1)
+                {
+                    Object[] options = { "HARD", "MEDIUM", "LUKEWARM",  "EASY" };
+                    int difficultyLevel = JOptionPane.showOptionDialog(null, "Select difficulty level", "Warning",
+                            JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+                            null, options, options[3]);
+                    board.init(difficultyLevel);
+                    btnSubmit.setVisible(false);
+                }
+                else
+                {
+                    Object[] selectHost = { "JOIN", "HOST"};
+                    int hostSelected = JOptionPane.showOptionDialog(null, "Host or join", "Warning",
+                            JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+                            null, selectHost, selectHost[1]);
+                    if (hostSelected == 1)
+                    {
+                        port = Integer.valueOf(JOptionPane.showInputDialog("Enter port"));
+                        System.out.println(port);
+                    }
+                    else
+                    {
+                        IP = JOptionPane.showInputDialog("Enter IP");
+                        System.out.println(IP);
+                        port = Integer.valueOf(JOptionPane.showInputDialog("Enter port"));
+                        System.out.println(port);
+
+                    }
+                    btnSubmit.setVisible(true);
+                }
+                tfHintCount.setText(String.valueOf(board.getHowManyHints()));
+            }
+        });
+
+        menuItem = new JMenuItem("Reset game", KeyEvent.VK_R);
+        menu.add(menuItem); // the menu adds this item
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                board.reset();
+            }
+        });
+
+        menuItem = new JMenuItem("Exit", KeyEvent.VK_Q);
+        menu.add(menuItem); // the menu adds this item
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+
+        menuItem = new JMenuItem("Get Hash", KeyEvent.VK_2);
+        menu.add(menuItem); // the menu adds this item
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println(board.puzzle.game.getHash());
+            }
+        });
+
+        setJMenuBar(menuBar);  // "this" JFrame sets its menu-bar
+
+        JPanel btnPanel = new JPanel(new FlowLayout());
         btnSubmit.setVisible(false);
 
         btnPanel.add(btnReset);
@@ -111,12 +193,11 @@ public class SudokuMain extends JFrame {
             }
         });
 
-
-        btnPanel.add(btnSubmit);
-        btnSubmit.addActionListener(new ActionListener() {
+        btnPanel.add(btnGetHash);
+        btnGetHash.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent evt) {
-                board.reset(); //t5e4rthjdrgthjddryjtrtyjfrtyjdrtyjdtyjdrtjrtjdrtyjdtyj
+            public void actionPerformed(ActionEvent e) {
+                System.out.println(board.puzzle.game.getHash());
             }
         });
 
