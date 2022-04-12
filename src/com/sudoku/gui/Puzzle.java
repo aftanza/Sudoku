@@ -27,9 +27,7 @@ public class Puzzle{
          case EASY -> game.setUpSudoku(69, 81);
       }
 
-      game.printTable();
       game.solveTable();
-      game.printTable();
 
       for (int row = 0; row < GameBoard.GRID_SIZE; ++row) {
          for (int col = 0; col < GameBoard.GRID_SIZE; ++col) {

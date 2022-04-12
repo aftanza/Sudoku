@@ -44,7 +44,7 @@ public class GameBoard extends JPanel {
     */
    public void init() {
       // Get a new puzzle
-      puzzle.newPuzzle(SudokuDifficulty.EASY);
+      puzzle.newPuzzle(SudokuDifficulty.HARD);
 
       CellInputListener listener = new CellInputListener();
 
@@ -97,7 +97,7 @@ public class GameBoard extends JPanel {
          // Retrieve the int entered
          int numberIn = (int)e.getKeyChar()-'0';
          // For debugging
-         System.out.println("You entered " + numberIn);
+//         System.out.println("You entered " + numberIn);
          //taDisplay.append("You have typed " + numberIn + "\n");
 
          if (numberIn == sourceCell.number) {
