@@ -30,7 +30,7 @@ public class Puzzle{
       //for some reason sometimes sudokusolver wont work, confusing
       if(game.areThereZeroes())
          game.solveTable();
-      game.printTable();
+//      game.printTable();
 
       for (int row = 0; row < GameBoard.GRID_SIZE; ++row) {
          for (int col = 0; col < GameBoard.GRID_SIZE; ++col) {
