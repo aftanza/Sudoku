@@ -10,7 +10,7 @@ public class Puzzle{
 
    boolean[][] isShown = new boolean[GameBoard.GRID_SIZE][GameBoard.GRID_SIZE];
 
-   SudokuTest game;
+   public SudokuTest game;
 
    // Constructor
    public Puzzle() {

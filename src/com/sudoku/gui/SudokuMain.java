@@ -3,6 +3,7 @@ package com.sudoku.gui;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 
 public class SudokuMain extends JFrame {
     // private variables
@@ -61,7 +62,6 @@ public class SudokuMain extends JFrame {
                 int modeSelected = JOptionPane.showOptionDialog(null, "Select mode", "Warning",
                         JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
                         null, mode, mode[1]);
-                System.out.println(modeSelected);
                 if (modeSelected == 1)
                 {
                     Object[] options = { "HARD", "MEDIUM", "LUKEWARM",  "EASY" };
@@ -80,7 +80,18 @@ public class SudokuMain extends JFrame {
                     if (hostSelected == 1)
                     {
                         port = Integer.valueOf(JOptionPane.showInputDialog("Enter port"));
-                        System.out.println(port);
+
+                        Object[] options = { "HARD", "MEDIUM", "LUKEWARM",  "EASY" };
+                        int difficultyLevel = JOptionPane.showOptionDialog(null, "Select difficulty level", "Warning",
+                                JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+                                null, options, options[3]);
+                        try {
+                            board.init(difficultyLevel, port);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        btnSubmit.setVisible(false);
                     }
                     else
                     {
@@ -88,7 +99,11 @@ public class SudokuMain extends JFrame {
                         System.out.println(IP);
                         port = Integer.valueOf(JOptionPane.showInputDialog("Enter port"));
                         System.out.println(port);
-
+                        try {
+                            board.init(port, IP);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                     btnSubmit.setVisible(true);
                 }

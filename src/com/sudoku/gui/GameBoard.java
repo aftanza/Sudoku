@@ -1,8 +1,12 @@
 package com.sudoku.gui;
 
+import com.sudoku.multiplayer.SudokuClient;
+import com.sudoku.multiplayer.SudokuHostServer;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import javax.swing.*;
 
 public class GameBoard extends JPanel {
@@ -37,9 +41,10 @@ public class GameBoard extends JPanel {
       super.setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
    }
 
+   //Single player
    public void init(int level) {
       // Get a new puzzle
-      switch(level){
+      switch (level) {
          case 3:
             puzzle.newPuzzle(SudokuDifficulty.EASY);
             break;
@@ -57,7 +62,6 @@ public class GameBoard extends JPanel {
             break;
       }
 
-
       CellInputListener listener = new CellInputListener();
 
       // Based on the puzzle, initialize all the cells.
@@ -74,6 +78,46 @@ public class GameBoard extends JPanel {
             }
          }
       }
+   }
+
+   //Host
+   public void init(int level, int port) throws IOException {
+      // Get a new puzzle
+      switch (level) {
+         case 3:
+            puzzle.newPuzzle(SudokuDifficulty.EASY);
+            break;
+         case 2:
+            puzzle.newPuzzle(SudokuDifficulty.LUKEWARM);
+            break;
+         case 1:
+            puzzle.newPuzzle(SudokuDifficulty.MEDIUM);
+            break;
+         case 0:
+            puzzle.newPuzzle(SudokuDifficulty.HARD);
+            break;
+         default:
+            puzzle.newPuzzle(SudokuDifficulty.EASY);
+            break;
+      }
+
+      for (int row = 0; row < GRID_SIZE; ++row) {
+         for (int col = 0; col < GRID_SIZE; ++col) {
+            cells[row][col].init(puzzle.numbers[row][col], puzzle.isShown[row][col]);
+         }
+      }
+      String puzzleHash = puzzle.game.getHash();
+      SudokuHostServer server = new SudokuHostServer(puzzle.game, port, puzzleHash);
+      server.startServer();
+      System.out.println(puzzleHash);
+
+
+   }
+
+   //Joining
+   public void init(int port, String IP)throws IOException {
+      SudokuClient client = new SudokuClient(puzzle.game,IP, port);
+      client.startClient();
    }
 
    public void reset(){
