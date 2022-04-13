@@ -14,6 +14,7 @@ public class SudokuMain extends JFrame {
     private TextField tfHintCount; // Declare a TextField component
     public int port;
     public String IP;
+    public boolean toggleMusic = true;
 
 
     // Constructor
@@ -212,8 +213,6 @@ public class SudokuMain extends JFrame {
             }
         });
 
-        cp.add(btnPanel,BorderLayout.EAST);
-
         try {
             // Open an audio input stream.
             URL url = getClass().getResource("soundtrack.wav");
@@ -224,6 +223,7 @@ public class SudokuMain extends JFrame {
             // Open audio clip and load samples from the audio input stream.
             clip.open(audioIn);
             clip.start();
+
         } catch (UnsupportedAudioFileException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -231,6 +231,8 @@ public class SudokuMain extends JFrame {
         } catch (LineUnavailableException e) {
             e.printStackTrace();
         }
+
+        cp.add(btnPanel,BorderLayout.EAST);
 
         board.init(3);
         tfHintCount.setText(String.valueOf(board.getHowManyHints()));
