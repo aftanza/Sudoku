@@ -231,6 +231,9 @@ public class SudokuMain extends JFrame {
         } catch (LineUnavailableException e) {
             e.printStackTrace();
         }
+//        catch (NullPointerException e){
+//            e.printStackTrace();
+//        }
 
         cp.add(btnPanel,BorderLayout.EAST);
 
