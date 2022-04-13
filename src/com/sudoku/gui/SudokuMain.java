@@ -279,6 +279,21 @@ public class SudokuMain extends JFrame {
             }
         });
 
+//        JButton btnColor = new JButton("Change Color");
+//        Color bgColor = Color.LIGHT_GRAY;
+//        btnPanel.add(btnColor, BorderLayout.SOUTH);
+//        btnColor.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent evt) {
+//                Color color = JColorChooser.showDialog( board,
+//                        "Choose a color", bgColor);
+//                if (color != null) { // new color selected
+//                    bgColor = color;
+//                }
+//                board.setBackground(bgColor); // change panel's background color
+//            }
+//        });
+
         btnPanel.add(btnHint);
         btnHint.addActionListener(new ActionListener() {
             @Override
