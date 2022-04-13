@@ -6,15 +6,23 @@ import java.awt.event.*;
 import java.io.*;
 import java.net.URL;
 import javax.sound.sampled.*;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.text.SimpleDateFormat;
 
 public class SudokuMain extends JFrame {
     // private variables
     GameBoard board = new GameBoard();
     private Label lblHintCount;    // Declare a Label component
+    private Label timeRemaining;
     private TextField tfHintCount; // Declare a TextField component
+    private Label title;
     public int port;
     public String IP;
     public boolean toggleMusic = true;
+    public boolean startTime = false;
+    public int currentMode = 0;
 
 
     // Constructor
@@ -30,6 +38,8 @@ public class SudokuMain extends JFrame {
         JButton btnNewGame = new JButton("New Game");
         JButton btnSubmit = new JButton("Submit");
         JButton btnGetHash = new JButton("Get Hash");
+        JButton btnStopMusic = new JButton("MusicToggle");
+        JButton btnHint = new JButton("Hint");
 
         // First Menu
         menu = new JMenu("File");
@@ -45,15 +55,36 @@ public class SudokuMain extends JFrame {
                 int modeSelected = JOptionPane.showOptionDialog(null, "Select mode", "Warning",
                         JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
                         null, mode, mode[1]);
-                System.out.println(modeSelected);
                 if (modeSelected == 1)
                 {
-                    Object[] options = { "HARD", "MEDIUM", "LUKEWARM",  "EASY" };
-                    int difficultyLevel = JOptionPane.showOptionDialog(null, "Select difficulty level", "Warning",
+                    Object[] singleMode = { "LIVES", "TIME", "AUTOCHECK"};
+                    int choosenMode = JOptionPane.showOptionDialog(null, "Select mode", "Warning",
                             JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
-                            null, options, options[3]);
-                    board.init(difficultyLevel);
-                    btnSubmit.setVisible(false);
+                            null, singleMode,null);
+                    if (choosenMode == 2)
+                    {
+                        Object[] options = { "HARD", "MEDIUM", "LUKEWARM",  "EASY" };
+                        int difficultyLevel = JOptionPane.showOptionDialog(null, "Select difficulty level", "Warning",
+                                JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+                                null, options, null);
+                        board.init(difficultyLevel);
+//                     btnSubmit.setVisible(false);
+                    }
+                    else if (choosenMode == 1)
+                    {
+                        Object[] options = { "HARD", "MEDIUM", "LUKEWARM",  "EASY" };
+                        int difficultyLevel = JOptionPane.showOptionDialog(null, "Select difficulty level", "Warning",
+                                JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+                                null, options, null);
+                        board.init(difficultyLevel);
+//                     btnSubmit.setVisible(false);
+                        startTime = true;
+
+                    }
+                    else
+                    {
+
+                    }
                 }
                 else
                 {
@@ -126,8 +157,12 @@ public class SudokuMain extends JFrame {
         cp.add(hintCount,BorderLayout.SOUTH);
 
 
-        JPanel btnPanel = new JPanel(new FlowLayout());
-
+        JPanel btnPanel = new JPanel();
+        btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.PAGE_AXIS));
+        title = new Label("SUDOKU");
+        title.setFont(new Font("Arial", Font.BOLD, 30));
+        title.setForeground(Color.GREEN);
+        btnPanel.add(title);
         btnPanel.add(btnReset);
         btnReset.addActionListener(new ActionListener() {
             @Override
@@ -149,12 +184,44 @@ public class SudokuMain extends JFrame {
                         null, mode, mode[1]);
                 if (modeSelected == 1)
                 {
-                    Object[] options = { "HARD", "MEDIUM", "LUKEWARM",  "EASY" };
-                    int difficultyLevel = JOptionPane.showOptionDialog(null, "Select difficulty level", "Warning",
+                    Object[] singleMode = { "LIVES", "TIME", "AUTOCHECK"};
+                    int choosenMode = JOptionPane.showOptionDialog(null, "Select mode", "Warning",
                             JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
-                            null, options, options[3]);
-                    board.init(difficultyLevel);
-//                    btnSubmit.setVisible(false);
+                            null, singleMode,null);
+                    currentMode = choosenMode;
+                    if (choosenMode == 2)
+                    {
+                        Object[] options = { "HARD", "MEDIUM", "LUKEWARM",  "EASY" };
+                        int difficultyLevel = JOptionPane.showOptionDialog(null, "Select difficulty level", "Warning",
+                                JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+                                null, options, null);
+                        board.setCurrentMode(currentMode);
+                        board.init(difficultyLevel);
+                     btnSubmit.setVisible(false);
+
+                    }
+                    else if (choosenMode == 1)
+                    {
+                        Object[] options = { "HARD", "MEDIUM", "LUKEWARM",  "EASY" };
+                        int difficultyLevel = JOptionPane.showOptionDialog(null, "Select difficulty level", "Warning",
+                                JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+                                null, options, null);
+                        board.setCurrentMode(currentMode);
+                        board.init(difficultyLevel);
+                     btnSubmit.setVisible(true);
+                        startTime = true;
+
+                    }
+                    else
+                    {
+                        Object[] options = { "HARD", "MEDIUM", "LUKEWARM",  "EASY" };
+                        int difficultyLevel = JOptionPane.showOptionDialog(null, "Select difficulty level", "Warning",
+                                JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+                                null, options, null);
+                        board.setCurrentMode(currentMode);
+                        board.init(difficultyLevel);
+                        btnSubmit.setVisible(false);
+                    }
                 }
                 else
                 {
@@ -196,14 +263,13 @@ public class SudokuMain extends JFrame {
             }
         });
 
-//        btnSubmit.setVisible(false);
-//        btnPanel.add(btnSubmit);
-//        btnSubmit.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent evt) {
-//                board.reset(); //t5e4rthjdrgthjddryjtrtyjfrtyjdrtyjdtyjdrtjrtjdrtyjdtyj
-//            }
-//        });
+        btnPanel.add(btnSubmit);
+        btnSubmit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                board.submit();
+            }
+        });
 
         btnPanel.add(btnGetHash);
         btnGetHash.addActionListener(new ActionListener() {
@@ -212,6 +278,50 @@ public class SudokuMain extends JFrame {
                 System.out.println(board.puzzle.game.getHash());
             }
         });
+
+        btnPanel.add(btnHint);
+        btnHint.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                board.showRandomHint();
+            }
+        });
+
+        timeRemaining = new Label("--");
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            int seconds = 120;
+
+            public void run() {
+
+                if (seconds<=10)
+                    timeRemaining.setForeground(Color.RED);
+                else if (seconds<=30)
+                    timeRemaining.setForeground(Color.ORANGE);
+
+                if (seconds>=60 && seconds%60>=10)
+                    timeRemaining.setText("Time left: " + seconds/60 +" : "+seconds%60 );
+                else if (seconds>=60)
+                    timeRemaining.setText("Time left: " + seconds/60 +" : 0"+seconds%60 );
+                else
+                    timeRemaining.setText("Time left: "+seconds%60 );
+                if (startTime == true)
+                {
+                    seconds--;
+                }
+                if (seconds < 0) {
+                    timer.cancel();
+                    startTime = false;
+                    seconds += 300;
+                    timeRemaining.setText("Time Over");
+                    board.setEditableFalseAll();
+                    JOptionPane.showMessageDialog(null, "TIME's UP", "TIME's UP", JOptionPane.ERROR_MESSAGE);
+                }
+
+
+            }
+        }, 0, 1000);
+        hintCount.add(timeRemaining);
 
         try {
             // Open an audio input stream.
@@ -223,6 +333,21 @@ public class SudokuMain extends JFrame {
             // Open audio clip and load samples from the audio input stream.
             clip.open(audioIn);
             clip.start();
+
+            btnPanel.add(btnStopMusic);
+            btnStopMusic.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent evt) {
+                    if(toggleMusic){
+                        toggleMusic = false;
+                        clip.stop();
+                    }
+                    else {
+                        toggleMusic = true;
+                        clip.start();
+                    }
+                }
+            });
 
         } catch (UnsupportedAudioFileException e) {
             e.printStackTrace();
@@ -236,9 +361,11 @@ public class SudokuMain extends JFrame {
 //        }
 
         cp.add(btnPanel,BorderLayout.EAST);
-
-        board.init(3);
+//
+        board.setEditableFalseAll();
         tfHintCount.setText(String.valueOf(board.getHowManyHints()));
+
+        board.setBorder(BorderFactory.createLineBorder(Color.RED, 15));
 
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

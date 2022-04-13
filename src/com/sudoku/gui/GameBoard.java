@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.Random;
 
 public class GameBoard extends JPanel {
    // Name-constants for the game board properties
@@ -24,6 +25,8 @@ public class GameBoard extends JPanel {
    // It also contains a Puzzle
    public Puzzle puzzle = new Puzzle();
    public TextArea taDisplay;
+   public int currentMode = 2;
+   public int live = 3;
 
    // Constructor
    public GameBoard() {
@@ -38,6 +41,10 @@ public class GameBoard extends JPanel {
       }
 
       super.setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
+   }
+
+   public void setCurrentMode(int x){
+      currentMode = x;
    }
 
    //Single player
@@ -74,6 +81,7 @@ public class GameBoard extends JPanel {
       for (int row = 0; row < GRID_SIZE; row++) {
          for (int col = 0; col < GRID_SIZE; col++) {
             if (cells[row][col].isEditable()) {
+
                cells[row][col].addKeyListener(listener);   // For all editable rows and cols
             }
          }
@@ -134,6 +142,57 @@ public class GameBoard extends JPanel {
       return true;
    }
 
+   public void submit(){
+      Cell sourceCell;
+
+      for(int row=0; row<GRID_SIZE; ++row){
+         for(int col=0; col<GRID_SIZE; ++col){
+            sourceCell = cells[row][col];
+
+            if (cells[row][col].isEditable()) {
+
+               if(sourceCell.getText().equals("")){
+                  sourceCell.status = CellStatus.NO_GUESS;
+               }
+               else if (sourceCell.getText().equals(String.valueOf(sourceCell.number))) {
+                  sourceCell.status = CellStatus.CORRECT_GUESS;
+               } else if (Integer.parseInt(sourceCell.getText()) >= 1 && Integer.parseInt(sourceCell.getText()) <= 9) {
+                  sourceCell.status = CellStatus.WRONG_GUESS;
+               } else {
+                  sourceCell.status = CellStatus.NO_GUESS;
+               }
+               sourceCell.paint();
+               if (isSolved()) {
+                  JOptionPane.showMessageDialog(null, "Congratulation!");
+               }
+            }
+         }
+      }
+   }
+
+   public void setEditableFalseAll(){
+      for (int row = 0; row < GRID_SIZE; ++row) {
+         for (int col = 0; col < GRID_SIZE; ++col) {
+            cells[row][col].setEditable(false);
+         }
+      }
+   }
+
+   public void showRandomHint(){
+      while (true){
+         for(int i=0; i<GRID_SIZE; ++i){
+            for(int j=0; j<GRID_SIZE; ++j){
+               if(cells[i][j].isEditable() == true){
+                  cells[i][j].setEditable(false);
+                  cells[i][j].status = CellStatus.SHOWN;
+                  cells[i][j].paint();
+                  return;
+               }
+            }
+         }
+      }
+   }
+
    public int getHowManyHints(){
       return puzzle.getHowManyHints();
    }
@@ -151,16 +210,38 @@ public class GameBoard extends JPanel {
 //         System.out.println("You entered " + numberIn);
          //taDisplay.append("You have typed " + numberIn + "\n");
 //         String input  = sourceCell.row + " " + sourceCell.col + " " + numberIn;
+         if (currentMode == 2) {
+            if (numberIn == sourceCell.number) {
+               sourceCell.status = CellStatus.CORRECT_GUESS;
+            } else if (numberIn >= 1 && numberIn <= 9) {
+               sourceCell.status = CellStatus.WRONG_GUESS;
+            } else {
+               sourceCell.status = CellStatus.NO_GUESS;
+            }
+            sourceCell.paint();
+            if (isSolved()) {
+               JOptionPane.showMessageDialog(null, "Congratulation!");
+            }
+         }
+         else if(currentMode == 0){
+            if (numberIn == sourceCell.number) {
+               sourceCell.status = CellStatus.CORRECT_GUESS;
+            } else if (numberIn >= 1 && numberIn <= 9) {
+               --live;
+               if(live == 0){
+                  JOptionPane.showMessageDialog(null, "GAME OVER", "GAME OVER", JOptionPane.ERROR_MESSAGE);
+                  setEditableFalseAll();
+               }
+               sourceCell.status = CellStatus.WRONG_GUESS;
+            } else {
+               sourceCell.status = CellStatus.NO_GUESS;
+            }
+            sourceCell.paint();
+            if (isSolved()) {
+               JOptionPane.showMessageDialog(null, "Congratulation!");
+            }
+         }
 
-         if (numberIn == sourceCell.number) {
-            sourceCell.status = CellStatus.CORRECT_GUESS;
-         } else {
-            sourceCell.status =  CellStatus.WRONG_GUESS;
-         }
-         sourceCell.paint();
-         if (isSolved()) {
-            JOptionPane.showMessageDialog(null, "Congratulation!");
-         }
 
       }
       @Override public void keyPressed(KeyEvent evt) { }
