@@ -1,6 +1,3 @@
 # Sudoku
-Sudoku for IM1003 w/ Bryan
-
-WELCOME TO OUR SUDOKU
-
-
+NTU-IEM Module: Object Oriented Programming <br>
+Creators: Aftanza and Bryan Noel
